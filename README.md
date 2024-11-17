@@ -25,7 +25,6 @@ sudo dnf install alsa-lib-devel
 ```
 
 
-
 # Usage
 
 ```
@@ -33,6 +32,23 @@ rustyvibes <soundpack_path> -v <volume> (0-100 | optional)
 ```
 
 ### Download Soundpacks: [Here](https://drive.google.com/file/d/1LQEQ9aOVQAs_wgVecXkjaA9K4LXnCdp_/view?usp=sharing)
+
+## Wayland Support
+Global Wayland support has limitations:
+  - Will not work if you use any key remapper (like keyd, kmonad, etc)
+  - Latency is increased by noticeable amount
+
+To use it, first add the user to `input` group using this command:
+```
+sudo usermod -a -G input $USER
+```
+
+Then **Login and Logout** to apply the changes
+
+Then run the command with the `--wayland` flag
+```
+rustyvibes <soundpack_path> -v <volume> (0-100 | optional) --wayland
+```
 
 ---
 

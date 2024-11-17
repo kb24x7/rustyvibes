@@ -21,6 +21,7 @@ fn main() {
     let a = ArgParser::parse();
     let soundpack = a.soundpack;
     let vol = a.volume.or(Some(100)).unwrap();
+    let using_wayland = a.wayland;
 
-    start::rustyvibes::start_rustyvibes(soundpack, vol);
+    start::rustyvibes::start_rustyvibes(soundpack, vol, using_wayland);
 }
