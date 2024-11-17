@@ -24,6 +24,12 @@ Fedora
 sudo dnf install alsa-lib-devel
 ```
 
+### Wayland Support
+Global Wayland support has limitations:
+  - Will not work if you use any key remapper (like keyd, kmonad, etc)
+  - Latency is increased by noticeable amount
+
+To use it
 
 
 # Usage

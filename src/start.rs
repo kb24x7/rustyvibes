@@ -1,6 +1,6 @@
 pub mod rustyvibes {
 
-    use rdev::{listen, Event};
+    use rdev::{listen, Event, grab};
     use serde_json;
     use serde_json::{Map, Value};
     use std::error::Error;
@@ -37,7 +37,7 @@ pub mod rustyvibes {
         }
     }
 
-    pub fn start_rustyvibes(args: String, vol: u16) {
+    pub fn start_rustyvibes(args: String, vol: u16, using_wayland: bool) {
         {
             #[cfg(any(target_os = "macos", target_os = "linux"))]
             unsafe {
@@ -60,13 +60,26 @@ pub mod rustyvibes {
         println!("Soundpack configuration loaded");
         println!("Rustyvibes is running");
 
+
+    
+    if using_wayland {
+        println!("using 'unstable_grab' for wayland");
+        let event_handler = move |event: Event| -> Option<Event> {
+            json_file.event_handler(event.clone(), args.clone(), vol);
+            Some(event.clone())
+        };
+        if let Err(error) = grab(event_handler) {
+            println!("Error: {:?}", error)
+        }
+    }else{
         let event_handler = move |event: Event| {
             json_file.event_handler(event, args.clone(), vol);
         };
-
         if let Err(error) = listen(event_handler) {
             println!("Error: {:?}", error)
         }
+    }
+
     }
 
     use once_cell::sync::Lazy;
@@ -75,7 +88,7 @@ pub mod rustyvibes {
 
     static KEY_DEPRESSED: Lazy<Mutex<HashSet<i32>>> = Lazy::new(|| Mutex::new(HashSet::new()));
 
-    fn callback(event: Event, json_file: serde_json::Map<std::string::String, serde_json::Value>, directory: String, vol: u16) {
+    fn callback(event: Event, json_file: serde_json::Map<std::string::String, serde_json::Value>, directory: String, vol: u16) -> Option<Event> {
         match event.event_type {
             rdev::EventType::KeyPress(key) => {
                 let key_code = key_code::code_from_key(key);
@@ -107,5 +120,8 @@ pub mod rustyvibes {
             }
             _ => (),
         }
+
+        // Return the event to avoid blocking
+        Some(event)
     }
 }
