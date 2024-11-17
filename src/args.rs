@@ -19,7 +19,7 @@ pub struct ArgParser {
     #[arg(short, long)]
     pub volume: Option<u16>,
 
-    /// Use unstable_grab for wayland
+    /// Enable wayland support (Experimental).
     /// Default: false
     #[arg(long, default_value_t = false)]
     pub wayland: bool
